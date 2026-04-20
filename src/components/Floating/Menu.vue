@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onBeforeUnmount, onMounted, provide, ref, toRef, watch } from 'vue';
+import { inject, onBeforeUnmount, onMounted, provide, ref, toRef, useId, watch } from 'vue';
 import { BiChevronUp } from 'vue-icons-plus/bi';
 import { useFloatingMenu } from '@/composables/useFloatingMenu';
 
