@@ -2,7 +2,7 @@
 
 A no-install needed GUI for Ollama.
 
-![Preview](https://github.com/user-attachments/assets/f16f82f4-9759-4b7d-8b8a-1abe64407c9f)
+![App Preview](https://github.com/user-attachments/assets/f16f82f4-9759-4b7d-8b8a-1abe64407c9f)
 
 ## Features
 
@@ -21,45 +21,62 @@ A [guide for setup](https://llamapen.app/guide) is included on the site. We've t
 
 Once set-up, you can start chatting. All **chats are stored locally** in your browser giving you complete privacy and near-instant chat load times.
 
-## Contributing/Running Locally
+## Running Locally
 
-Contributing/running locally is also made as straightforward as possible. To get a local version of LlamaPen running on your machine, follow these steps:
+> If you instead want to contribute/run a development server, check out the [contribution guide](CONTRIBUTING.md).
 
-### 0. Prerequisites
+Running locally is made as straightforward as possible. There are two ways of getting a local LlamaPen instance:
+
+### Docker (reccommended)
+
+This route assumes you have [Docker](https://www.docker.com/) installed on your system. 
+
+Pull the image:
+
+```bash
+docker pull ghcr.io/imdarktom/llamapen:latest
+```
+
+Run the image:
+
+```bash
+docker run -d -p 8080:80 --name llamapen --restart unless-stopped ghcr.io/imdarktom/llamapen:latest
+```
+
+> You can swap out the `8080` in the arguments for any port that you want LlamaPen to run on. 
+
+This will create a container that runs on startup with your computer and lets LlamaPen be accessible on localhost at the port specified.
+
+
+### Manually
+
+You may run the app manually without Docker by installing it and running it through Bun. This is slightly less preferrable as you might encounter issues due to differences in package/tool versions.
 
 Make sure you have installed:
 
 - [Git](https://git-scm.com/downloads)
-- [Bun](https://bun.sh/) (1.3+)
+- [Bun](https://bun.sh/) (1.3+ tested)
 
-### 1. Download
+#### 1. Clone
 
 ```bash
-git clone https://github.com/ImDarkTom/LlamaPen
+git clone https://github.com/ImDarkTom/LlamaPen.git
 cd LlamaPen
 ```
 
-### 2. Install dependencies
+#### 2. Install dependencies
 
 ```bash
-bun i
+bun install
 ```
 
-### 3. Run
+#### 3. Run
 
-If you want to run in **developer mode** and see changes in your code updated live, do:
-
-```bash
-bun dev
-```
-
-If you want to just **run locally** with no overhead, do:
+To run a local server:
 
 ```bash
 bun run local
 ```
-
-*That's it!* If you are contributing and using VSCode you can optionally install the extensions in the `extensions.json` file for a smoother development experience.
 
 ## LlamaPen Cloud
 
