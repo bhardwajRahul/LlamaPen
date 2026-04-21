@@ -27,7 +27,7 @@ Once set-up, you can start chatting. All **chats are stored locally** in your br
 
 Running locally is made as straightforward as possible. There are two ways of getting a local LlamaPen instance:
 
-### Docker (reccommended)
+### Docker (recommended)
 
 This route assumes you have [Docker](https://www.docker.com/) installed on your system. 
 
