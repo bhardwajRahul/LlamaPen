@@ -1,4 +1,3 @@
-import type { ReadableOf } from "@/types/util";
 import { chat, generateChatTitle } from "./helpers";
 import type { ChatIteratorChunk, ChatOptions, Model, ModelCapabilities } from "../base/types";
 import { appMesagesToOllama } from "./converters/appMessagesToOllama";
@@ -66,7 +65,7 @@ export class OllamaProvider extends BaseProvider implements OllamaLLMProvider {
 		}
 	}
 
-    async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<ReadableOf<ChatIteratorChunk>> {
+    async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<AsyncIterable<ChatIteratorChunk>> {
 		const ollamaFormatMessages = await appMesagesToOllama(messages);
         return chat(ollamaFormatMessages, abortSignal, options);
     }

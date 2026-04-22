@@ -1,4 +1,3 @@
-import type { ReadableOf } from "@/types/util";
 import { useConfigStore } from "@/stores/config";
 import type { ChatIteratorChunk, ChatOptions } from "@/providers/base/types";
 import type { ChatRequest } from "ollama";
@@ -85,6 +84,6 @@ async function* chatIterator(
     }
 }
 
-export function chat(messages: Ollama.Message[], abortSignal: AbortSignal, options: ChatOptions): ReadableOf<ChatIteratorChunk> {
+export function chat(messages: Ollama.Message[], abortSignal: AbortSignal, options: ChatOptions): AsyncIterable<ChatIteratorChunk> {
     return chatIterator(messages, abortSignal, options);
 }

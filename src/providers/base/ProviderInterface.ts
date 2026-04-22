@@ -1,4 +1,3 @@
-import type { ReadableOf } from "@/types/util";
 import type { ChatIteratorChunk, ChatOptions, Model, ModelCapabilities } from "./types";
 import type { ShowResponse } from "ollama/browser";
 import type { Reactive, Ref } from "vue";
@@ -47,7 +46,7 @@ export interface BaseLLMProvider {
         messages: ChatMessage[], 
         abortSignal: AbortSignal, 
         options: ChatOptions,
-    ): Promise<ReadableOf<ChatIteratorChunk>>;
+    ): Promise<AsyncIterable<ChatIteratorChunk>>;
 
     /**
      * Get a list of available models from the provider. This is used when loading capabilites in some providers to set `rawModels`.

@@ -1,4 +1,3 @@
-import type { ReadableOf } from "@/types/util";
 import type { ChatIteratorChunk, ChatOptions, Model, ModelCapabilities } from "../base/types";
 import { lpCloudWrapper } from "./LPCloudWrapper";
 import { reactive, ref, type Reactive, type Ref } from "vue";
@@ -46,7 +45,7 @@ export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider 
         }
     }
 
-    async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<ReadableOf<ChatIteratorChunk>> {
+    async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<AsyncIterable<ChatIteratorChunk>> {
         const ollamaFormatMessages = await appMessagesToLPCloud(messages);
         return chat(ollamaFormatMessages, abortSignal, options);
     }
