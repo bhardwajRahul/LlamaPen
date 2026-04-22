@@ -7,13 +7,16 @@ import type { ModelInfo } from "@/composables/useProviderManager";
 import { appMessagesToLPCloud } from "./converters/appMessagesToLPCloud";
 import { chat } from "./helpers/chat";
 import * as helpers from "./helpers/generateChatTitle";
+import useUserStore from "@/stores/user";
 
 
 export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider {
     name = "LlamaPen Cloud";
     rawModels: Ref<ModelInfo[]> = ref<ModelInfo[]>([]);
 
-    isSignedIn: boolean = false; // TODO: actually implement this
+    get isSignedIn() {
+        return useUserStore().isSignedIn;
+    }
 
     connectionState: Reactive<ConnectionState> = reactive({
         status: 'disconnected',
