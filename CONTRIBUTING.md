@@ -15,7 +15,7 @@ Make sure you have the following installed:
 - [Git](https://git-scm.com/downloads)
 - [Bun](https://bun.sh/) (1.3+ tested)
 
-Optionally, you may also want to download [Docker](https://www.docker.com/) if you plan on building a docker after your changes.
+Optionally, you may also want to download [Docker](https://www.docker.com/) if you plan on building a Docker image after your changes.
 
 ## Download
 
