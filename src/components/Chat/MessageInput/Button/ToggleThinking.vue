@@ -27,7 +27,7 @@ const selectedAlwaysReasons = computed(() => {
 
 watch(selectedAlwaysReasons, () => {
     if (selectedAlwaysReasons.value) {
-        model.value = false;
+        model.value = true;
     }
 });
 
