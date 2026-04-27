@@ -46,6 +46,7 @@ const modelIconMap: Record<string, string> = {
 	moonshot: 'moonshot',
 	kimi: 'moonshot',
 	grok: 'grok',
+	minimax: 'minimax',
 };
 
 function getSlug(): string {
