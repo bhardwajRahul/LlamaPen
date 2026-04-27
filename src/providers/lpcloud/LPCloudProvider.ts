@@ -20,7 +20,7 @@ export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider 
         lastChecked: undefined
     });
 
-    get isSignedIn() {
+    public get isSignedIn() {
         return useUserStore().isSignedIn;
     }
 
@@ -33,7 +33,7 @@ export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider 
         }
     }
 
-    async refreshConnection(): Promise<void> {
+    public async refreshConnection(): Promise<void> {
         this.connectionState.status = 'checking';
 
         const returnedError = await lpCloudWrapper.checkConnection();
@@ -48,12 +48,12 @@ export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider 
         }
     }
 
-    async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<AsyncIterable<ChatIteratorChunk>> {
+    public async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<AsyncIterable<ChatIteratorChunk>> {
         const ollamaFormatMessages = await appMessagesToLPCloud(messages);
         return chat(ollamaFormatMessages, abortSignal, options);
     }
     
-    async getModels(): Promise<Model[]> {
+    public async getModels(): Promise<Model[]> {
         const list = await lpCloudWrapper.list();
 
         return list.map((m) => {
@@ -78,7 +78,7 @@ export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider 
         });
     }
 
-    getModelCapabilities(modelId: string): ModelCapabilities {
+    public getModelCapabilities(modelId: string): ModelCapabilities {
         return this.fetchedCapabilities.value.get(modelId) ?? {
             supportsFunctionCalling: false,
             supportsReasoning: false,
@@ -86,7 +86,7 @@ export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider 
         };
     }
 
-    generateChatTitle(messages: ChatMessage[]): Promise<string> {
-        return helpers.generateChatTitle(messages);
+    public async generateChatTitle(messages: ChatMessage[]): Promise<string> {
+        return await helpers.generateChatTitle(messages);
     }
 }

@@ -98,9 +98,11 @@ export interface LPCloudLLMProvider extends BaseLLMProvider {
     isSignedIn: boolean;
 }
 
+
 export type LLMProvider = BaseLLMProvider | OllamaLLMProvider;
 
 export type LLMProviderTypes = OllamaProvider;
+
 
 export function isOllamaProvider(provider: LLMProvider): provider is OllamaLLMProvider {
     return 'getLoadedModelIds' in provider;

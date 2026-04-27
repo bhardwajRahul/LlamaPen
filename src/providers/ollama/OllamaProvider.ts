@@ -18,7 +18,7 @@ export class OllamaProvider extends BaseProvider implements OllamaLLMProvider {
 
     readonly hasOllamaFeatures = true as const;
 
-    connectionState: Reactive<ConnectionState> = reactive({
+    readonly connectionState: Reactive<ConnectionState> = reactive({
         status: 'disconnected',
         error: undefined,
         lastChecked: undefined
@@ -51,7 +51,7 @@ export class OllamaProvider extends BaseProvider implements OllamaLLMProvider {
         }
     }
 
-    async refreshConnection(): Promise<void> {
+    public async refreshConnection(): Promise<void> {
         this.connectionState.status = 'checking';
 
         const { error } = await ollamaWrapper.version();
@@ -67,12 +67,12 @@ export class OllamaProvider extends BaseProvider implements OllamaLLMProvider {
     }
 
 
-    async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<AsyncIterable<ChatIteratorChunk>> {
+    public async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<AsyncIterable<ChatIteratorChunk>> {
         const ollamaFormatMessages = await appMesagesToOllama(messages);
         return chat(ollamaFormatMessages, abortSignal, options);
     }
 
-    async getModels(): Promise<Model[]> {
+    public async getModels(): Promise<Model[]> {
         const list = await ollamaWrapper.list();
 
         return list.map((m) => {
@@ -99,7 +99,7 @@ export class OllamaProvider extends BaseProvider implements OllamaLLMProvider {
         });
     }
 
-    getModelCapabilities(modelId: string): ModelCapabilities {
+    public getModelCapabilities(modelId: string): ModelCapabilities {
         return this.fetchedCapabilities.value.get(modelId) ?? {
             supportsFunctionCalling: false,
             supportsReasoning: false,
@@ -107,7 +107,7 @@ export class OllamaProvider extends BaseProvider implements OllamaLLMProvider {
         };
     }
 
-    generateChatTitle(messages: ChatMessage[]): Promise<string> {
+    public async generateChatTitle(messages: ChatMessage[]): Promise<string> {
         return generateChatTitle(messages);
     }
 
