@@ -8,7 +8,7 @@ import { useModelSelect } from '@/stores/useModelSelect';
 import type { Model } from '@/providers/base/types';
 import { useProviderManager, type ModelInfo } from '@/composables/useProviderManager';
 
-const userStore = useCloudUserStore();
+const cloudUserStore = useCloudUserStore();
 const config = useConfigStore();
 const { getModelCapabilities } = useProviderManager();
 
@@ -32,11 +32,11 @@ const actionMenuButton = ref<HTMLElement | null>(null);
 function setModel(e: MouseEvent, model: Model) {
 	if (actionMenuButton.value && actionMenuButton.value.contains(e.target as Node)) return;
 
-	if (config.cloud.enabled && !userStore.isSignedIn) {
+	if (config.cloud.enabled && !cloudUserStore.isSignedIn) {
 		// Show toast to sign in
 		router.push('/account');
 		return;
-	} else if (providerMetadata.value?.provider === 'lpcloud' && providerMetadata.value.data.premium && !userStore.isPremium) {
+	} else if (providerMetadata.value?.provider === 'lpcloud' && providerMetadata.value.data.premium && !cloudUserStore.isPremium) {
 		// Show toast to check out premium
 		router.push('/account#plan');
 		return;
@@ -97,7 +97,7 @@ const selectActions: MenuEntry[] = [
 			'bg-surface-light': selected && !isCurrentModel,
 			'bg-surface-light ring-highlight!': isCurrentModel,
 			'opacity-50': providerMetadata?.provider === 'lpcloud' 
-				&& ((providerMetadata.data.premium && !userStore.isPremium) || (config.cloud.enabled && !userStore.isSignedIn)),
+				&& ((providerMetadata.data.premium && !cloudUserStore.isPremium) || (config.cloud.enabled && !cloudUserStore.isSignedIn)),
 		}" @click="setModel($event, model.info)" ref="listItemRef" :aria-selected="selected">
 
 		<IconModel :name="model.info.id" class="size-10 p-1" />
@@ -119,7 +119,7 @@ const selectActions: MenuEntry[] = [
 					</div>
 					<template v-if="model.info.providerMetadata?.provider === 'lpcloud'">
 						<div 
-							v-if="model.info.providerMetadata.data.premium && !userStore.isPremium"
+							v-if="model.info.providerMetadata.data.premium && !cloudUserStore.isPremium"
 							class="bg-yellow-400/25 rounded-sm ring-1 ring-yellow-400 p-0.5"
 							title="Premium model - requires LlamaPen Cloud Premium">
 							<BiStar class="text-yellow-400 size-4" />
@@ -180,7 +180,7 @@ const selectActions: MenuEntry[] = [
 			'bg-surface-light': selected && !isCurrentModel,
 			'bg-surface-light ring-highlight!': isCurrentModel,
 			'opacity-50': providerMetadata?.provider === 'lpcloud' 
-				&& ((providerMetadata.data.premium && !userStore.isPremium) || (config.cloud.enabled && !userStore.isSignedIn)),
+				&& ((providerMetadata.data.premium && !cloudUserStore.isPremium) || (config.cloud.enabled && !cloudUserStore.isSignedIn)),
 		}" @click="setModel($event, model.info)" ref="listItemRef" :aria-selected="selected">
 
 		<div class="flex flex-col items-center">
@@ -201,7 +201,7 @@ const selectActions: MenuEntry[] = [
 				</div>
 				<template v-if="providerMetadata?.provider === 'lpcloud'">
 					<div 
-						v-if="providerMetadata.data.premium && !userStore.isPremium"
+						v-if="providerMetadata.data.premium && !cloudUserStore.isPremium"
 						class="bg-yellow-400/25 rounded-sm ring-1 ring-yellow-400 p-0.5"
 						title="Premium model - requires LlamaPen Cloud Premium">
 						<BiStar class="text-yellow-400 size-4" />
