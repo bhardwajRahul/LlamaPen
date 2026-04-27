@@ -2,7 +2,7 @@
 import router from '@/lib/router';
 import useUserStore from '@/stores/user';
 import { computed, ref } from 'vue';
-import { BiBrain, BiDotsHorizontalRounded, BiDotsVerticalRounded, BiHeart, BiLock, BiPencil, BiShow, BiSolidBox, BiSolidHeart, BiStar, BiWrench } from 'vue-icons-plus/bi';
+import { BiBox, BiBrain, BiDotsHorizontalRounded, BiDotsVerticalRounded, BiHeart, BiLock, BiPencil, BiShow, BiSolidHeart, BiStar, BiWrench } from 'vue-icons-plus/bi';
 import { useConfigStore } from '@/stores/config';
 import { useModelSelect } from '@/stores/useModelSelect';
 import type { Model } from '@/providers/base/types';
@@ -119,7 +119,7 @@ const selectActions: MenuEntry[] = [
 					</div>
 					<template v-if="model.info.providerMetadata?.provider === 'lpcloud'">
 						<div 
-							v-if="model.info.providerMetadata.data.premium"
+							v-if="model.info.providerMetadata.data.premium && !userStore.isPremium"
 							class="bg-yellow-400/25 rounded-sm ring-1 ring-yellow-400 p-0.5"
 							title="Premium model - requires LlamaPen Cloud Premium">
 							<BiStar class="text-yellow-400 size-4" />
@@ -128,8 +128,7 @@ const selectActions: MenuEntry[] = [
 							v-if="model.info.providerMetadata.data.tags?.includes('closedSource')"
 							class="bg-orange-400/25 rounded-sm ring-1 ring-orange-400 p-0.5"
 							title="Proprietary model - closed-source model that is not open-source.">
-							<BiSolidBox class="text-orange-400 size-4" />
-
+							<BiBox class="text-orange-400 size-4" />
 						</div>
 					</template>
 					<!-- Capability tags -->
@@ -202,7 +201,7 @@ const selectActions: MenuEntry[] = [
 				</div>
 				<template v-if="providerMetadata?.provider === 'lpcloud'">
 					<div 
-						v-if="providerMetadata.data.premium"
+						v-if="providerMetadata.data.premium && !userStore.isPremium"
 						class="bg-yellow-400/25 rounded-sm ring-1 ring-yellow-400 p-0.5"
 						title="Premium model - requires LlamaPen Cloud Premium">
 						<BiStar class="text-yellow-400 size-4" />
@@ -211,7 +210,7 @@ const selectActions: MenuEntry[] = [
 						v-if="providerMetadata.data.tags?.includes('closedSource')"
 						class="bg-orange-400/25 rounded-sm ring-1 ring-orange-400 p-0.5"
 						title="Proprietary model - closed-source model that is not open-source.">
-						<BiSolidBox class="text-orange-400 size-4" />
+						<BiBox class="text-orange-400 size-4" />
 					</div>
 				</template>
 				<!-- Capability tags -->

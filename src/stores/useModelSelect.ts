@@ -88,10 +88,14 @@ export const useModelSelect = defineStore('modelSelect', () => {
         items = userSort(items) || items;
 
         if (currentProviderId.value === 'lpcloud') {
-            if (!userStore.isPremium) {
-                items.sort((a, b) => {
-                    return ((a.info.providerMetadata as (ProviderMetadata & { provider: 'lpcloud' })).data.premium ? 1 : 0) - ((b.info.providerMetadata as (ProviderMetadata & { provider: 'lpcloud' })).data.premium ? 1 : 0)
-                });
+            const lpMeta = (item: ModelInfo) => (item.info.providerMetadata as (ProviderMetadata & { provider: 'lpcloud' })).data;
+            
+            if (userStore.isPremium) {
+                // Only show premium models for users with premium
+                items = items.filter(item => lpMeta(item).premium);
+            } else {
+                // Non-premium at the top
+                items.sort((a, b) => (lpMeta(a).premium ? 1 : 0) - (lpMeta(b).premium ? 1 : 0));
             }
 
             if (userStore.userInfo.options.showProprietaryModels === false) {
