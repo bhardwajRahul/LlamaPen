@@ -3,7 +3,7 @@ import type { ChatIteratorChunk, ChatOptions, Model, ModelCapabilities } from ".
 import { appMesagesToOllama } from "./converters/appMessagesToOllama";
 import { ollamaWrapper } from "./OllamaWrapper";
 import type { ShowResponse } from "ollama/browser";
-import { reactive, ref, type Reactive, type Ref } from "vue";
+import { reactive, ref, type Reactive } from "vue";
 import type { ConnectionState, OllamaLLMProvider } from "../base/ProviderInterface";
 import { BaseProvider } from "../base/BaseProvider";
 import { useConfigStore } from "@/stores/config";
@@ -13,148 +13,147 @@ import type { ModelInfo } from "@/composables/useProviderManager";
  * Interfaces with the Ollama wrapper before packaging responses into the common app standard.
  */
 export class OllamaProvider extends BaseProvider implements OllamaLLMProvider {
-	name = "Ollama";
-	hasOllamaFeatures = true as const;
-	rawModels: Ref<ModelInfo[], ModelInfo[]> = ref<ModelInfo[]>([]);;
-	
+    name = "Ollama";
+    hasOllamaFeatures = true as const;
+    rawModels = ref<ModelInfo[]>([]);
 
-	protected async onModelsLoaded(): Promise<void> {
-		let loadedModelIds = await this.getLoadedModelIds();
+    connectionState: Reactive<ConnectionState> = reactive({
+        status: 'disconnected',
+        error: undefined,
+        lastChecked: undefined
+    });
 
-		this.rawModels.value = this.rawModels.value.map(m => {
-			return {
-				...m,
-				subtitle: m.info.id,
-				loadedInMemory: loadedModelIds.includes(m.info.id),
-			};
-		});
 
-		const config = useConfigStore();
-		const shouldAutoloadCapabilities = !config.cloud.enabled && 
-			(
-				config.ollama.modelCapabilities.autoload && this.rawModels.value.length < 31
-				|| config.ollama.modelCapabilities.alwaysAutoload
-			);
+    protected async onModelsLoaded(): Promise<void> {
+        let loadedModelIds = await this.getLoadedModelIds();
 
-		if (shouldAutoloadCapabilities) {
-			for (const model of this.rawModels.value) {
-				const capabilities = await this.fetchModelCapabilities(model.info.id);
-				this.fetchedCapabilities.value.set(model.info.id, capabilities);
-			}
-		}
-	}
+        this.rawModels.value = this.rawModels.value.map(m => {
+            return {
+                ...m,
+                subtitle: m.info.id,
+                loadedInMemory: loadedModelIds.includes(m.info.id),
+            };
+        });
 
-	connectionState: Reactive<ConnectionState> = reactive({
-		status: 'disconnected',
-		error: undefined,
-		lastChecked: undefined
-	});
+        const config = useConfigStore();
+        const shouldAutoloadCapabilities = !config.cloud.enabled &&
+            (
+                config.ollama.modelCapabilities.autoload && this.rawModels.value.length < 31
+                || config.ollama.modelCapabilities.alwaysAutoload
+            );
 
-	async refreshConnection(): Promise<void> {
-		this.connectionState.status = 'checking';
+        if (shouldAutoloadCapabilities) {
+            for (const model of this.rawModels.value) {
+                const capabilities = await this.fetchModelCapabilities(model.info.id);
+                this.fetchedCapabilities.value.set(model.info.id, capabilities);
+            }
+        }
+    }
 
-		const { error } = await ollamaWrapper.version();
+    async refreshConnection(): Promise<void> {
+        this.connectionState.status = 'checking';
 
-		if (error) {
-			this.connectionState.status = 'error';
-			this.connectionState.error = error.message;
-		} else {
-			this.connectionState.status = 'connected';
-			this.connectionState.error = undefined;
-			this.connectionState.lastChecked = new Date();
-		}
-	}
+        const { error } = await ollamaWrapper.version();
+
+        if (error) {
+            this.connectionState.status = 'error';
+            this.connectionState.error = error.message;
+        } else {
+            this.connectionState.status = 'connected';
+            this.connectionState.error = undefined;
+            this.connectionState.lastChecked = new Date();
+        }
+    }
+
 
     async chat(messages: ChatMessage[], abortSignal: AbortSignal, options: ChatOptions): Promise<AsyncIterable<ChatIteratorChunk>> {
-		const ollamaFormatMessages = await appMesagesToOllama(messages);
+        const ollamaFormatMessages = await appMesagesToOllama(messages);
         return chat(ollamaFormatMessages, abortSignal, options);
     }
-    
+
     async getModels(): Promise<Model[]> {
-		const list = await ollamaWrapper.list();
+        const list = await ollamaWrapper.list();
 
-		return list.map((m) => {
-			return {
-				name: m.name,
-				id: m.model,
-				subtitle: m.details.parameter_size,
-				capabilities: {
-					supportsFunctionCalling: false,
-					supportsReasoning: false,
-					supportsVision: false,
-				},
-				providerMetadata: {
-					provider: 'ollama',
-					data: {
-						size: m.size,
-						parameterSize: m.details.parameter_size,
-						family: m.details.family,
-						modifiedAt: m.modified_at,
-						quantization: m.details.quantization_level,
-					}
-				}
-			}
-		});
-	}
+        return list.map((m) => {
+            return {
+                name: m.name,
+                id: m.model,
+                subtitle: m.details.parameter_size,
+                capabilities: {
+                    supportsFunctionCalling: false,
+                    supportsReasoning: false,
+                    supportsVision: false,
+                },
+                providerMetadata: {
+                    provider: 'ollama',
+                    data: {
+                        size: m.size,
+                        parameterSize: m.details.parameter_size,
+                        family: m.details.family,
+                        modifiedAt: m.modified_at,
+                        quantization: m.details.quantization_level,
+                    }
+                }
+            }
+        });
+    }
 
-	getModelCapabilities(modelId: string): ModelCapabilities {
-		return this.fetchedCapabilities.value.get(modelId) ?? {
-			supportsFunctionCalling: false,
-			supportsReasoning: false,
-			supportsVision: false,
-		};
-	}
-
-    private async fetchModelCapabilities(modelId: string): Promise<ModelCapabilities> {
-		// 'completion' | 'tools' | 'thinking' | 'vision' | 'insert' | 'embedding' | 'search'
-
-		const { data: modelInfo, error } = await ollamaWrapper.show({ model: modelId });
-		if (error || !modelInfo) {
-			return {
-				supportsFunctionCalling: false,
-				supportsReasoning: false,
-				supportsVision: false,
-			};
-		}
-
-		const capabilities = modelInfo.capabilities;
-
-		return {
-			supportsReasoning: capabilities.includes('thinking'),
-			supportsVision: capabilities.includes('vision'),
-			supportsFunctionCalling: capabilities.includes('tools'),
-		}
-	}
+    getModelCapabilities(modelId: string): ModelCapabilities {
+        return this.fetchedCapabilities.value.get(modelId) ?? {
+            supportsFunctionCalling: false,
+            supportsReasoning: false,
+            supportsVision: false,
+        };
+    }
 
     generateChatTitle(messages: ChatMessage[]): Promise<string> {
         return generateChatTitle(messages);
     }
 
-	
-	async getLoadedModelIds(): Promise<string[]> {
-		const loadedModels = await ollamaWrapper.ps();
-		if (!loadedModels) return [];
 
-		return loadedModels.map(model => model.model);
-	}
+    async getLoadedModelIds(): Promise<string[]> {
+        const loadedModels = await ollamaWrapper.ps();
+        if (!loadedModels) return [];
+
+        return loadedModels.map(model => model.model);
+    }
 
     async loadModelIntoMemory(modelId: string): Promise<boolean> {
-		const success = await ollamaWrapper.loadIntoMemory(modelId);
-		return success;
-	}
+        return await ollamaWrapper.loadIntoMemory(modelId);
+    }
 
     async unloadModel(modelId: string): Promise<boolean> {
-		const success = await ollamaWrapper.unloadFromMemory(modelId);
-		return success;
-	}
+        return await ollamaWrapper.unloadFromMemory(modelId);
+    }
 
 
-	async getModelDetails(modelId: string): Promise<{ data: ShowResponse, error: null } | { data: null, error: string }> {
-		const { data: modelInfo, error } = await ollamaWrapper.show({ model: modelId });
-		if (error) {
-			return { data: null, error: error.message };
-		}
+    async getModelDetails(modelId: string): Promise<{ data: ShowResponse, error: null } | { data: null, error: string }> {
+        const { data: modelInfo, error } = await ollamaWrapper.show({ model: modelId });
+        if (error) {
+            return { data: null, error: error.message };
+        }
 
-		return { data: modelInfo, error: null };
-	}
+        return { data: modelInfo, error: null };
+    }
+
+    private async fetchModelCapabilities(modelId: string): Promise<ModelCapabilities> {
+        // 'completion' | 'tools' | 'thinking' | 'vision' | 'insert' | 'embedding' | 'search'
+
+        const { data: modelInfo, error } = await ollamaWrapper.show({ model: modelId });
+        if (error || !modelInfo) {
+            return {
+                supportsFunctionCalling: false,
+                supportsReasoning: false,
+                supportsVision: false,
+            };
+        }
+
+        const capabilities = modelInfo.capabilities;
+
+        return {
+            supportsReasoning: capabilities.includes('thinking'),
+            supportsVision: capabilities.includes('vision'),
+            supportsFunctionCalling: capabilities.includes('tools'),
+        }
+    }
 }
