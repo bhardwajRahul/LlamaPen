@@ -43,6 +43,16 @@ const warningText = computed(() => {
     }
 });
 
+function isModelAvailable(model: ModelInfo): boolean {
+    if (model.info.providerMetadata?.provider === 'lpcloud') {
+        if (model.info.providerMetadata.data.premium) {
+            return cloudUserStore.isPremium;
+        }
+    }
+
+    return true;
+}
+
 </script>
 
 <template>
@@ -55,7 +65,12 @@ const warningText = computed(() => {
             <BiError v-else class="text-warning ml-1" />
         </Tooltip>
         
-        <FloatingMenu v-model:is-opened="isOpened" preffered-position="bottom" :unstyled-button="true" :unstyled-menu="true" :disabled="!props.modelMessageDone">
+        <FloatingMenu 
+            v-model:is-opened="isOpened" 
+            preffered-position="bottom" 
+            :unstyled-button="true" 
+            :unstyled-menu="true" 
+            :disabled="!props.modelMessageDone">
             <template #button>
                 <div 
                     class="flex flex-row p-1 gap-1 group/msg-model bg-transparent rounded-xl items-center transition-all duration-dynamic"
@@ -89,7 +104,7 @@ const warningText = computed(() => {
                         :key="model.info.id"
                         :modelId="model.info.id"
                         :modelName="model.displayName"
-                        :modelIsAvailable="model.info.providerMetadata?.provider === 'lpcloud' ? (model.info.providerMetadata.data.premium && cloudUserStore.isPremium) : true"
+                        :modelIsAvailable="isModelAvailable(model)"
                         :regenerate-message="regenerateMessage" />
                 </div>
             </template>
