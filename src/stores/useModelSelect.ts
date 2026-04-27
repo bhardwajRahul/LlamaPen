@@ -8,7 +8,7 @@ import useCloudUserStore from "./useCloudUserStore";
 export const useModelSelect = defineStore('modelSelect', () => {
     const { getModelCapabilities, currentProviderId } = useProviderManager();
     const config = useConfigStore();
-    const userStore = useCloudUserStore();
+    const cloudUserStore = useCloudUserStore();
 
     const searchQuery = ref('');
     const isMenuOpened = ref(false);
@@ -90,7 +90,7 @@ export const useModelSelect = defineStore('modelSelect', () => {
         if (currentProviderId.value === 'lpcloud') {
             const lpMeta = (item: ModelInfo) => (item.info.providerMetadata as (ProviderMetadata & { provider: 'lpcloud' })).data;
             
-            if (userStore.isPremium) {
+            if (cloudUserStore.isPremium) {
                 // Only show premium models for users with premium
                 items = items.filter(item => lpMeta(item).premium);
             } else {
@@ -98,7 +98,7 @@ export const useModelSelect = defineStore('modelSelect', () => {
                 items.sort((a, b) => (lpMeta(a).premium ? 1 : 0) - (lpMeta(b).premium ? 1 : 0));
             }
 
-            if (userStore.userInfo.options.showProprietaryModels === false) {
+            if (cloudUserStore.userInfo.options.showProprietaryModels === false) {
                 items = items.filter(item => !((item.info.providerMetadata as (ProviderMetadata & { provider: 'lpcloud' })).data.tags?.includes('closedSource')));
             }
         }

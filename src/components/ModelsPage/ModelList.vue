@@ -17,7 +17,7 @@ const config = useConfigStore();
 const { setModelHidden } = useUIStore();
 const { rawModels } = useProviderManager();
 const { isConnected, isLoading, allModelIds, isOllama } = useProviderManager();
-const userStore = useCloudUserStore();
+const cloudUserStore = useCloudUserStore();
 
 const props = defineProps<{
     modelsList: ModelInfo[],
@@ -160,7 +160,7 @@ const hideAll = () => {
     refreshModelList();
 };
 
-const showProprietaryModels = ref(userStore.userInfo.options.showProprietaryModels);
+const showProprietaryModels = ref(cloudUserStore.userInfo.options.showProprietaryModels);
 
 const searchQuery = ref('');
 

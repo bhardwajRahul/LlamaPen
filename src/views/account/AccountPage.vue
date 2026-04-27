@@ -9,7 +9,7 @@ import supabase from '@/lib/supabase';
 import isDateBeforeToday from '@/utils/core/isDateBeforeToday';
 import { BiBug, BiFile, BiLoaderAlt, BiLogoStripe, BiLogOut, BiMailSend, BiShield, BiSolidCheckSquare, BiTimeFive, BiUserMinus } from 'vue-icons-plus/bi';
 
-const userStore = useCloudUserStore();
+const cloudUserStore = useCloudUserStore();
 const config = useConfigStore();
 
 const loadingSubButtonPage = ref(false);
@@ -21,13 +21,13 @@ onMounted(() => {
 		return;
 	}
 
-	userStore.refreshUserInfo();
+	cloudUserStore.refreshUserInfo();
 	setPageTitle('Account');
 });
 
 async function subscriptionButtonClick() {
 	loadingSubButtonPage.value = true;
-	if (userStore.isPremium) {
+	if (cloudUserStore.isPremium) {
 		const url = config.requestUrl('/stripe/manage');
 
 		const response = await authedFetch(url);
@@ -67,33 +67,33 @@ async function deleteAccount() {
 
 // Cloud's used token amount only updates when the user sends a request, therefore we can otherwise assume that it is at limit.
 const realRemaining = computed(() => {
-	const lastUpdatedRaw = userStore.userInfo.usage.lastUpdated;
-	if (!lastUpdatedRaw) return userStore.userInfo.usage.remaining;
+	const lastUpdatedRaw = cloudUserStore.userInfo.usage.lastUpdated;
+	if (!lastUpdatedRaw) return cloudUserStore.userInfo.usage.remaining;
 
 	if (isDateBeforeToday(lastUpdatedRaw)) {
 		// If the date was before today, that means the daily token reset must have happened. 
-		return userStore.userInfo.usage.limit;
+		return cloudUserStore.userInfo.usage.limit;
 	} else {
-		return userStore.userInfo.usage.remaining;
+		return cloudUserStore.userInfo.usage.remaining;
 	}
 })
 
-const quotaUsedPercentage = computed(() => (realRemaining.value / userStore.userInfo.usage.limit) * 100);
+const quotaUsedPercentage = computed(() => (realRemaining.value / cloudUserStore.userInfo.usage.limit) * 100);
 
 const subButtonText = computed(() => {
 	if (loadingSubButtonPage.value) {
-		return userStore.isPremium
+		return cloudUserStore.isPremium
 			? 'Opening subscription manager...'
 			: 'Opening checkout session...';
 	}
 
-	return userStore.isPremium
+	return cloudUserStore.isPremium
 		? 'Manage subscription'
 		: 'Subscribe to LlamaPen Premium'
 });
 
 const showPriceTag = computed(() => {
-	return !loadingSubButtonPage.value && !userStore.isPremium
+	return !loadingSubButtonPage.value && !cloudUserStore.isPremium
 });
 
 async function signOut() {
@@ -106,19 +106,19 @@ async function signOut() {
 }
 
 const periodEnd = computed(() => {
-	if (!userStore.userInfo.subscription.period_end) return 'Unknown';
+	if (!cloudUserStore.userInfo.subscription.period_end) return 'Unknown';
 	
-	return new Date(userStore.userInfo.subscription.period_end * 1000).toLocaleDateString();
+	return new Date(cloudUserStore.userInfo.subscription.period_end * 1000).toLocaleDateString();
 });
 </script>
 
 <template>
 	<div class="w-full h-full flex flex-col items-center py-4 box-border overflow-y-auto px-2
 	*:mx-auto *:md:w-4/5 *:lg:w-3/5 *:max-w-3xl">
-		<div v-if="userStore.isLoading" class="h-full flex items-center justify-center">
+		<div v-if="cloudUserStore.isLoading" class="h-full flex items-center justify-center">
 			<BiLoaderAlt class="animate-spin size-12" />
 		</div>
-		<AccountPageSignIn v-else-if="!userStore.isSignedIn" />
+		<AccountPageSignIn v-else-if="!cloudUserStore.isSignedIn" />
 		<div v-else>
 			<div class="flex flex-row justify-between items-center">
 				<span class="font-bold text-4xl!">My Account</span>
@@ -129,22 +129,22 @@ const periodEnd = computed(() => {
 					@click="signOut" />
 			</div>
 			<AccountPageSection flex-direction="row">
-				<img :src="userStore.userInfo.details.pictureUrl" alt="User avatar" 
+				<img :src="cloudUserStore.userInfo.details.pictureUrl" alt="User avatar" 
 				class="size-28 rounded-full outline-2 outline-border-muted">
 				<div class="flex flex-col overflow-hidden gap-2">
-					<span class="text-text text-2xl font-semibold">{{ userStore.userInfo.details.name }}</span>
-					<span>{{ userStore.userInfo.details.email }}</span>
-					<span>{{ userStore.subName }} Tier</span>
+					<span class="text-text text-2xl font-semibold">{{ cloudUserStore.userInfo.details.name }}</span>
+					<span>{{ cloudUserStore.userInfo.details.email }}</span>
+					<span>{{ cloudUserStore.subName }} Tier</span>
 				</div>
 			</AccountPageSection>
 			
 			<AccountPageSection title="Plan & Usage" flex-direction="col">
 				<h3 class="text-2xl">Usage Limits</h3>
-				<span v-if="userStore.isLoading">Loading...</span>
+				<span v-if="cloudUserStore.isLoading">Loading...</span>
 				<div v-else class="w-full">
 					<span class="flex flex-row">
 						<span>
-							Messages remaining: <b>{{ realRemaining }}/{{ userStore.userInfo.usage.limit }}</b>
+							Messages remaining: <b>{{ realRemaining }}/{{ cloudUserStore.userInfo.usage.limit }}</b>
 						</span>
 						<div class="grow"></div>
 						<span>Resets daily at 00:00 UTC</span>
@@ -157,12 +157,12 @@ const periodEnd = computed(() => {
 					</div>
 				</div>
 				<h3 class="text-2xl" id="plan">Plan</h3>
-				<div v-if="userStore.isPremium" class="flex flex-row gap-2">
+				<div v-if="cloudUserStore.isPremium" class="flex flex-row gap-2">
 					<span class="border-2 border-border-muted rounded-lg p-2">
-						Status: <span class="font-semibold capitalize">{{ userStore.userInfo.subscription.status }}</span>
+						Status: <span class="font-semibold capitalize">{{ cloudUserStore.userInfo.subscription.status }}</span>
 					</span>
 					<span 
-						v-if="userStore.userInfo.subscription.cancel_at_period_end" 
+						v-if="cloudUserStore.userInfo.subscription.cancel_at_period_end" 
 						class="bg-warning/75 text-background-light p-2 rounded-lg border-2 border-warning flex flex-row gap-2 items-center"
 					>
 						Ending {{ periodEnd }} <BiTimeFive />
@@ -185,7 +185,7 @@ const periodEnd = computed(() => {
 					</button>
 				</div>
 				<span class="text-sm flex flex-row gap-1 items-center justify-center"><BiLogoStripe class="size-4" />Payments handled securely by Stripe</span>
-				<div v-if="!userStore.isPremium" class="flex flex-col md:flex-row gap-4 md:gap-2">
+				<div v-if="!cloudUserStore.isPremium" class="flex flex-col md:flex-row gap-4 md:gap-2">
 					<div class="w-full md:w-1/2 border-2 border-border-muted rounded-lg">
 						<h4 class="text-xl font-semibold bg-border-muted text-center select-none p-2">Free (current plan)</h4>
 						<ul class="p-4 flex flex-col gap-1 *:flex *:flex-row *:gap-2 *:items-center">

@@ -3,7 +3,7 @@ import { BiCloud, BiCog, BiHelpCircle, BiLogoGithub } from 'vue-icons-plus/bi';
 import useCloudUserStore from '@/stores/useCloudUserStore';
 import { useConfigStore } from '@/stores/config';
 
-const userStore = useCloudUserStore();
+const cloudUserStore = useCloudUserStore();
 const config = useConfigStore();
 
 const buttonClasses = 'w-full border-none p-1.5 m-0 box-border rounded-lg h-8 bg-background-light cursor-pointer transition-all duration-dynamic hover:ring ring-primary';
@@ -14,7 +14,7 @@ const buttonClasses = 'w-full border-none p-1.5 m-0 box-border rounded-lg h-8 bg
         <SidebarFooterStatusBanner v-if="!config.cloud.enabled" />
         <SidebarRouterLink v-else-if="config.cloud.enabled" to="/account">
             <div class="flex w-full h-16 bg-background-light ring-1 ring-border-muted rounded-xl p-2 hover:ring-primary transition-all duration-dynamic">
-                <template v-if="userStore.isLoading" >
+                <template v-if="cloudUserStore.isLoading" >
                     <div class="flex items-center mr-3 p-1">
                         <div class="bg-highlight/85 size-10 rounded-full animate-pulse"></div>
                     </div>
@@ -23,14 +23,14 @@ const buttonClasses = 'w-full border-none p-1.5 m-0 box-border rounded-lg h-8 bg
                         <span class="bg-highlight/75 w-12 h-4 rounded-sm animate-pulse"></span>
                     </div>
                 </template>
-                <template v-else-if="userStore.isSignedIn">
+                <template v-else-if="cloudUserStore.isSignedIn">
                     <div class="flex items-center mr-3 p-1">
-                        <img :src="userStore.userInfo.details.pictureUrl" alt="User avatar"
+                        <img :src="cloudUserStore.userInfo.details.pictureUrl" alt="User avatar"
                             class="size-10 rounded-full">
                     </div>
                     <div class="flex flex-col grow">
-                        <span class="font-bold">{{ userStore.userInfo.details.name }}</span>
-                        <span class="text-sm">{{userStore.subName }}</span>
+                        <span class="font-bold">{{ cloudUserStore.userInfo.details.name }}</span>
+                        <span class="text-sm">{{cloudUserStore.subName }}</span>
                     </div>
                 </template>
                 <template v-else>

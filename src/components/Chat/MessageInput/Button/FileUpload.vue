@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { BiImageAdd } from 'vue-icons-plus/bi';
 import { useProviderManager } from '@/composables/useProviderManager';
 
-const userStore = useCloudUserStore();
+const cloudUserStore = useCloudUserStore();
 const config = useConfigStore();
 const { selectedModelCapabilities } = useProviderManager();
 
@@ -18,7 +18,7 @@ const selectedModelHasVision = computed(() => {
 });
 
 const cloudNotAllowed = computed(() => {
-    return config.cloud.enabled && !userStore.isPremium;
+    return config.cloud.enabled && !cloudUserStore.isPremium;
 });
 
 function onClick(e: MouseEvent) {
