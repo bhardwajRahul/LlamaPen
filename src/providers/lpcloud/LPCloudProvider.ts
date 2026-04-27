@@ -11,18 +11,18 @@ import useUserStore from "@/stores/user";
 
 
 export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider {
-    name = "LlamaPen Cloud";
-    rawModels: Ref<ModelInfo[]> = ref<ModelInfo[]>([]);
+    readonly name = "LlamaPen Cloud";
+    readonly rawModels: Ref<ModelInfo[]> = ref([]);
 
-    get isSignedIn() {
-        return useUserStore().isSignedIn;
-    }
-
-    connectionState: Reactive<ConnectionState> = reactive({
+    readonly connectionState: Reactive<ConnectionState> = reactive({
         status: 'disconnected',
         error: undefined,
         lastChecked: undefined
     });
+
+    get isSignedIn() {
+        return useUserStore().isSignedIn;
+    }
 
     protected onModelsLoaded(): void {
         for (const model of this.rawModels.value) {

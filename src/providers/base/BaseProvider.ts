@@ -9,10 +9,10 @@ export abstract class BaseProvider implements BaseLLMProvider {
     abstract readonly name: string;
     abstract readonly connectionState: BaseLLMProvider['connectionState'];
 
-    abstract rawModels: Ref<ModelInfo[]>;
-    protected fetchedCapabilities = ref<Map<string, ModelCapabilities>>(new Map());
+    abstract readonly rawModels: Ref<ModelInfo[]>;
+    protected readonly fetchedCapabilities = ref<Map<string, ModelCapabilities>>(new Map());
     
-    protected initialised = ref(false);
+    private initialised = ref(false);
     private loadPromise: Promise<void> | null = null;
 
     private transformModel(model: Model): ModelInfo {

@@ -13,9 +13,10 @@ import type { ModelInfo } from "@/composables/useProviderManager";
  * Interfaces with the Ollama wrapper before packaging responses into the common app standard.
  */
 export class OllamaProvider extends BaseProvider implements OllamaLLMProvider {
-    name = "Ollama";
-    hasOllamaFeatures = true as const;
-    rawModels = ref<ModelInfo[]>([]);
+    readonly name = "Ollama";
+    readonly rawModels = ref<ModelInfo[]>([]);
+
+    readonly hasOllamaFeatures = true as const;
 
     connectionState: Reactive<ConnectionState> = reactive({
         status: 'disconnected',

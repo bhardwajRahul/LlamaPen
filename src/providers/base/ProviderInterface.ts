@@ -17,8 +17,7 @@ export interface BaseLLMProvider {
      */
     readonly name: string;
     readonly connectionState: Reactive<ConnectionState>;
-    
-    rawModels: Ref<ModelInfo[]>;
+    readonly rawModels: Ref<ModelInfo[]>;
 
     /** 
      * Set the connection state to loading and re-send a network request to the provider's URL
