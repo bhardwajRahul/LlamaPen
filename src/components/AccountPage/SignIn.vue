@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import supabase from '@/lib/supabase';
-import useUserStore from '@/stores/user';
+import useCloudUserStore from '@/stores/useCloudUserStore';
 import { ref } from 'vue';
 import { BiLogoGoogle } from 'vue-icons-plus/bi';
 
-const userStore = useUserStore();
+const cloudUserStore = useCloudUserStore();
 
 const isSigningIn = ref(false);
 
@@ -32,7 +32,7 @@ async function signIn() {
             <div class="flex flex-col items-center gap-4">
                 <span class="font-bold text-xl">Welcome to LlamaPen Cloud</span>
                 <ButtonPrimary
-                    v-if="!userStore.isSignedIn" 
+                    v-if="!cloudUserStore.isSignedIn" 
                     class="font-medium px-16" 
                     :class="{ 'opacity-75': isSigningIn }"
                     :text="isSigningIn ? 'Signing in...' : 'Continue with Google'" 

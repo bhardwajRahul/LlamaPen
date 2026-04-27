@@ -5,7 +5,7 @@ import { computed } from '@vue/reactivity';
 import { ref } from 'vue';
 import { BsCloudSlash } from 'vue-icons-plus/bs';
 import { BiError, BiRefresh } from 'vue-icons-plus/bi';
-import useUserStore from '@/stores/user';
+import useCloudUserStore from '@/stores/useCloudUserStore';
 import { useProviderManager, type ModelInfo } from '@/composables/useProviderManager';
 
 const props = defineProps<{
@@ -14,7 +14,7 @@ const props = defineProps<{
 }>();
 
 const messagesStore = useMessagesStore();
-const userStore = useUserStore();
+const cloudUserStore = useCloudUserStore();
 const { rawModels, getModelInfo } = useProviderManager();
 const { isLoading } = useProviderManager();
 
@@ -89,7 +89,7 @@ const warningText = computed(() => {
                         :key="model.info.id"
                         :modelId="model.info.id"
                         :modelName="model.displayName"
-                        :modelIsAvailable="model.info.providerMetadata?.provider === 'lpcloud' ? (model.info.providerMetadata.data.premium && userStore.isPremium) : true"
+                        :modelIsAvailable="model.info.providerMetadata?.provider === 'lpcloud' ? (model.info.providerMetadata.data.premium && cloudUserStore.isPremium) : true"
                         :regenerate-message="regenerateMessage" />
                 </div>
             </template>

@@ -4,7 +4,7 @@ import * as OllamaTypes from "ollama/browser";
 import logger from "@/lib/logger";
 import supabase from "@/lib/supabase";
 import { useConfigStore } from "@/stores/config";
-import { getSessionToken } from "@/stores/user";
+import { getSessionToken } from "@/stores/useCloudUserStore";
 import { tryCatch } from "@/utils/core/tryCatch";
 
 namespace LPCloudTypes {

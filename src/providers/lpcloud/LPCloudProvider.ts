@@ -7,7 +7,7 @@ import type { ModelInfo } from "@/composables/useProviderManager";
 import { appMessagesToLPCloud } from "./converters/appMessagesToLPCloud";
 import { chat } from "./helpers/chat";
 import * as helpers from "./helpers/generateChatTitle";
-import useUserStore from "@/stores/user";
+import useCloudUserStore from "@/stores/useCloudUserStore";
 
 
 export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider {
@@ -21,7 +21,7 @@ export class LPCloudProvider extends BaseProvider implements LPCloudLLMProvider 
     });
 
     public get isSignedIn() {
-        return useUserStore().isSignedIn;
+        return useCloudUserStore().isSignedIn;
     }
 
     protected onModelsLoaded(): void {

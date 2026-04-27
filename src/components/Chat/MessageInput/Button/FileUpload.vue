@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useConfigStore } from '@/stores/config';
-import useUserStore from '@/stores/user';
+import useCloudUserStore from '@/stores/useCloudUserStore';
 import { computed } from 'vue';
 import { BiImageAdd } from 'vue-icons-plus/bi';
 import { useProviderManager } from '@/composables/useProviderManager';
 
-const userStore = useUserStore();
+const userStore = useCloudUserStore();
 const config = useConfigStore();
 const { selectedModelCapabilities } = useProviderManager();
 

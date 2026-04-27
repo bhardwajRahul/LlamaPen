@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { BiCloud, BiCog, BiHelpCircle, BiLogoGithub } from 'vue-icons-plus/bi';
-import useUserStore from '@/stores/user';
+import useCloudUserStore from '@/stores/useCloudUserStore';
 import { useConfigStore } from '@/stores/config';
 
-const userStore = useUserStore();
+const userStore = useCloudUserStore();
 const config = useConfigStore();
 
 const buttonClasses = 'w-full border-none p-1.5 m-0 box-border rounded-lg h-8 bg-background-light cursor-pointer transition-all duration-dynamic hover:ring ring-primary';

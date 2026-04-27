@@ -91,7 +91,7 @@ export interface AccountSettings {
 /**
  * Store to manage auth with LlamaPen account.
  */
-const useUserStore = defineStore('user', () => {
+const useCloudUserStore = defineStore('user', () => {
     init();
 
     const userInfo = computed(() => userInfoRef.value);
@@ -140,4 +140,4 @@ export async function getSessionToken() {
     return session?.data.session?.access_token;
 }
 
-export default useUserStore;
+export default useCloudUserStore;

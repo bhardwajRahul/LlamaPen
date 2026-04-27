@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { AccountSettings } from '@/stores/user';
-import useUserStore from '@/stores/user';
+import type { AccountSettings } from '@/stores/useCloudUserStore';
+import useCloudUserStore from '@/stores/useCloudUserStore';
 import { onMounted, reactive, ref } from 'vue';
 import { BiHelpCircle } from 'vue-icons-plus/bi';
 
-const userStore = useUserStore();
+const cloudUserStore = useCloudUserStore();
 
 const form = reactive<AccountSettings>({
     providerSelection: 'all',
@@ -12,7 +12,7 @@ const form = reactive<AccountSettings>({
 });
 
 onMounted(() => {
-    Object.assign(form, userStore.userInfo.options);
+    Object.assign(form, cloudUserStore.userInfo.options);
 });
 
 const saveBtnText = ref('Save');
@@ -22,7 +22,7 @@ async function updateOptions() {
     saveBtnText.value = "Saving...";
     isSaving.value = true;
 
-    const { success, message } = await userStore.updateAccountSettings(form);
+    const { success, message } = await cloudUserStore.updateAccountSettings(form);
 
     isSaving.value = false;
     if (success) {

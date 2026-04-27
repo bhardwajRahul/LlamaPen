@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import router from '@/lib/router';
-import useUserStore from '@/stores/user';
+import useCloudUserStore from '@/stores/useCloudUserStore';
 import { computed, ref } from 'vue';
 import { BiBox, BiBrain, BiDotsHorizontalRounded, BiDotsVerticalRounded, BiHeart, BiLock, BiPencil, BiShow, BiSolidHeart, BiStar, BiWrench } from 'vue-icons-plus/bi';
 import { useConfigStore } from '@/stores/config';
@@ -8,7 +8,7 @@ import { useModelSelect } from '@/stores/useModelSelect';
 import type { Model } from '@/providers/base/types';
 import { useProviderManager, type ModelInfo } from '@/composables/useProviderManager';
 
-const userStore = useUserStore();
+const userStore = useCloudUserStore();
 const config = useConfigStore();
 const { getModelCapabilities } = useProviderManager();
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from '@/lib/router';
 import { useConfigStore } from '@/stores/config';
-import useUserStore from '@/stores/user';
+import useCloudUserStore from '@/stores/useCloudUserStore';
 import { computed, ref } from 'vue';
 import type { IconType } from 'vue-icons-plus';
 import { BiCopy, BiDotsVerticalRounded, BiDownload, BiHide, BiLinkExternal, BiPencil, BiShow, BiTrash } from 'vue-icons-plus/bi';
@@ -17,7 +17,7 @@ const config = useConfigStore();
 const { setModelHidden } = useUIStore();
 const { rawModels } = useProviderManager();
 const { isConnected, isLoading, allModelIds, isOllama } = useProviderManager();
-const userStore = useUserStore();
+const userStore = useCloudUserStore();
 
 const props = defineProps<{
     modelsList: ModelInfo[],

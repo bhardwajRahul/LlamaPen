@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useConfigStore } from '@/stores/config';
-import useUserStore from '@/stores/user';
+import useCloudUserStore from '@/stores/useCloudUserStore';
 import { authedFetch } from '@/utils/core/authedFetch';
 import logger from '@/lib/logger';
 import setPageTitle from '@/utils/core/setPageTitle';
@@ -9,7 +9,7 @@ import supabase from '@/lib/supabase';
 import isDateBeforeToday from '@/utils/core/isDateBeforeToday';
 import { BiBug, BiFile, BiLoaderAlt, BiLogoStripe, BiLogOut, BiMailSend, BiShield, BiSolidCheckSquare, BiTimeFive, BiUserMinus } from 'vue-icons-plus/bi';
 
-const userStore = useUserStore();
+const userStore = useCloudUserStore();
 const config = useConfigStore();
 
 const loadingSubButtonPage = ref(false);

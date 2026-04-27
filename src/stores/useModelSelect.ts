@@ -3,12 +3,12 @@ import { computed, ref } from "vue";
 import { useConfigStore } from "./config";
 import type { Model, ModelCapabilities, ProviderMetadata } from "@/providers/base/types";
 import { useProviderManager, type ModelInfo } from "@/composables/useProviderManager";
-import useUserStore from "./user";
+import useCloudUserStore from "./useCloudUserStore";
 
 export const useModelSelect = defineStore('modelSelect', () => {
     const { getModelCapabilities, currentProviderId } = useProviderManager();
     const config = useConfigStore();
-    const userStore = useUserStore();
+    const userStore = useCloudUserStore();
 
     const searchQuery = ref('');
     const isMenuOpened = ref(false);
