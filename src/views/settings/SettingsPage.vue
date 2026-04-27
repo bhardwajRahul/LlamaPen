@@ -100,7 +100,7 @@ async function checkOllamaVersion() {
         return;
     }
 
-    alert(`✅ Ollama Version: ${version}`);
+    alert(`✅ Ollama Version: ${version.data.version}`);
 }
 
 const selectedProvider = computed({
